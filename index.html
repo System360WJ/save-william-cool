@@ -11,6 +11,7 @@
             --success: #00ff88;
             --bg: #020205;
             --accent: #7000ff;
+            --gold: #ffd700;
         }
 
         body {
@@ -114,102 +115,114 @@
         .hud-box {
             background: linear-gradient(135deg, rgba(0,242,255,0.1) 0%, rgba(112,0,255,0.05) 100%);
             border: 1px solid rgba(0, 242, 255, 0.3);
-            padding: 15px 30px;
+            padding: 12px 25px;
             border-radius: 2px;
             backdrop-filter: blur(15px);
             text-transform: uppercase;
-            font-size: 12px;
-            letter-spacing: 4px;
+            font-size: 11px;
+            letter-spacing: 3px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .coin-icon {
+            color: var(--gold);
+            text-shadow: 0 0 10px var(--gold);
+            font-weight: bold;
         }
 
         /* Adjusted Interaction Layer to prevent overlaying */
         #interaction-layer {
             position: relative;
             z-index: 10;
-            margin-top: auto; /* Push to bottom */
-            margin-bottom: 40px;
+            margin-top: auto; 
+            margin-bottom: 30px;
             align-self: center;
-            width: 90%;
-            max-width: 800px;
-            background: rgba(5, 5, 15, 0.85);
-            border: 1px solid rgba(0, 242, 255, 0.2);
-            padding: 30px;
-            backdrop-filter: blur(10px);
+            width: 85%;
+            max-width: 900px;
+            background: rgba(5, 5, 15, 0.9);
+            border: 1px solid rgba(0, 242, 255, 0.15);
+            padding: 25px;
+            backdrop-filter: blur(12px);
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(30px);
             transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         #question {
-            font-size: 1.2rem;
-            margin-bottom: 25px;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
             text-align: center;
             font-weight: 400;
             letter-spacing: 1px;
             color: var(--primary);
+            text-transform: uppercase;
         }
 
         .answers-grid { 
             display: grid; 
             grid-template-columns: 1fr 1fr;
-            gap: 15px; 
+            gap: 12px; 
         }
 
         button.ans-btn {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #eee;
-            padding: 15px;
-            border-radius: 4px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #bbb;
+            padding: 18px;
+            border-radius: 2px;
             cursor: pointer;
             transition: 0.2s;
-            text-align: center;
-            font-size: 0.9rem;
+            text-align: left;
+            font-size: 0.85rem;
+            line-height: 1.4;
         }
 
         button.ans-btn:hover {
-            background: rgba(0, 242, 255, 0.2);
+            background: rgba(0, 242, 255, 0.15);
             border-color: var(--primary);
             color: #fff;
+            transform: translateY(-2px);
         }
 
         .sidebar {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            height: 300px;
-            width: 30px;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.05);
+            height: 250px;
+            width: 25px;
+            background: rgba(255,255,255,0.01);
+            border: 1px solid rgba(255,255,255,0.03);
             display: flex;
             flex-direction: column-reverse;
-            padding: 4px;
+            padding: 3px;
             opacity: 0;
             transition: opacity 1s;
             z-index: 5;
         }
-        #sidebar-left { left: 20px; }
-        #sidebar-right { right: 20px; }
+        #sidebar-left { left: 15px; }
+        #sidebar-right { right: 15px; }
 
         .meter-segment {
             width: 100%;
-            height: 6px;
+            height: 5px;
             margin: 1px 0;
-            background: #111;
-            transition: background 0.5s;
+            background: #0a0a0a;
+            transition: background 0.4s;
         }
 
         #end-screen {
             position: fixed;
             inset: 0;
-            background: rgba(2,2,5,0.98);
+            background: rgba(2,2,5,0.99);
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 2000;
             text-align: center;
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(30px);
         }
 
         .end-title { font-size: 4rem; letter-spacing: 20px; margin-bottom: 20px; font-weight: 900; }
@@ -240,7 +253,8 @@
 
 <div id="end-screen">
     <h1 class="end-title" id="end-status-title">MISSION OVER</h1>
-    <div style="font-size: 1.5rem; color: var(--primary); margin-bottom: 40px; letter-spacing: 5px;" id="end-stats-text">INTEGRITY: 100%</div>
+    <div style="font-size: 1.5rem; color: var(--primary); margin-bottom: 20px; letter-spacing: 5px;" id="end-stats-text">INTEGRITY: 100%</div>
+    <div style="font-size: 1.2rem; color: var(--gold); margin-bottom: 40px; letter-spacing: 2px;" id="end-coins-text">COINS COLLECTED: 0</div>
     <button id="start-button" onclick="location.reload()">RE-INITIALISE</button>
 </div>
 
@@ -248,8 +262,13 @@
     <canvas id="game"></canvas>
     
     <div id="interface">
-        <div class="hud-box" id="stability-display">STABILITY: 100.00%</div>
-        <div class="hud-box">OBJ: PROTECT_SUBJECT_WILL</div>
+        <div class="hud-box">
+            <span id="stability-display">STABILITY: 100.00%</span>
+        </div>
+        <div class="hud-box">
+            <span class="coin-icon">N-COINS:</span>
+            <span id="coin-display">0</span>
+        </div>
     </div>
 
     <div id="sidebar-left" class="sidebar"></div>
@@ -262,7 +281,7 @@
 </div>
 
 <script>
-/* ================= AUDIO ARCHITECTURE (AMPLIFIED) ================= */
+/* ================= AUDIO ARCHITECTURE ================= */
 const AudioController = (() => {
     let ctx = null;
     let mainGain = null;
@@ -324,6 +343,9 @@ const AudioController = (() => {
         },
         wrong: () => {
             playTone(80, 'sawtooth', 0.6, 0.6, 30); 
+        },
+        coin: () => {
+            playTone(1500, 'sine', 0.1, 0.2, 2000);
         }
     };
 })();
@@ -343,6 +365,7 @@ resize();
 const state = {
     index: 0,
     wrong: 0,
+    coins: 0,
     stability: 100,
     stars: Array.from({length: 150}, () => ({
         x: Math.random() * width,
@@ -359,24 +382,40 @@ const state = {
 
 const questions = [
     {
-        q: "Identification: Who is being addressed?",
-        a: ["The Unborn Child", "The Mother", "The Soldier", "The Machine"],
-        correct: 0
+        q: "Analysis: Which of these is FALSE about the speaker?",
+        a: [
+            "The poem is spoken by an unborn child.",
+            "The speaker asks for protection from the world.",
+            "The speaker confidently embraces being born."
+        ],
+        correct: 2 // Bottom is wrong
     },
     {
-        q: "Threat Level: What is the 'cog in a machine'?",
-        a: ["A toy", "Dehumanization", "A clock", "A factory"],
-        correct: 1
+        q: "Structure: Which statement is INCORRECT?",
+        a: [
+            "The poem is written in free verse (no scheme).",
+            "The poem is structured as series of 'I' pleas.",
+            "Each stanza follows the same number of lines."
+        ],
+        correct: 2 // Bottom is wrong
     },
     {
-        q: "Protection: Why does the child ask for a 'wall'?",
-        a: ["To keep out rain", "To stop the birth", "To block out liars", "To hide from God"],
-        correct: 2
+        q: "Context: Which claim is historically WRONG?",
+        a: [
+            "The poem was written during World War Two.",
+            "The speaker wants political stability.",
+            "The poem warns about humanity's path."
+        ],
+        correct: 0 // Top is wrong
     },
     {
-        q: "Final Act: What is the alternative to birth?",
-        a: ["Total Silence", "Death as a Stone", "Infinite Sleep", "A new identity"],
-        correct: 1
+        q: "Ethics: Which description is FALSE?",
+        a: [
+            "The poem warns about what humanity is becoming.",
+            "It encourages embracing conformity and obedience.",
+            "The speaker begs not to be 'murdered' by the world."
+        ],
+        correct: 1 // Middle is wrong
     }
 ];
 
@@ -398,7 +437,7 @@ function updateMeters() {
             seg.style.background = '#ff0055';
             seg.style.boxShadow = '0 0 10px #ff0055';
         } else {
-            seg.style.background = '#111';
+            seg.style.background = '#0a0a0a';
             seg.style.boxShadow = 'none';
         }
     });
@@ -440,6 +479,9 @@ function loadQuestion() {
 function handleAnswer(choice) {
     if (choice === questions[state.index].correct) {
         AudioController.correct();
+        state.coins += 250;
+        AudioController.coin();
+        document.getElementById("coin-display").textContent = state.coins;
     } else {
         state.wrong++;
         state.stability -= (100 / questions.length);
@@ -463,13 +505,17 @@ function handleAnswer(choice) {
     animateNum();
 
     state.index++;
-    loadQuestion();
+    setTimeout(loadQuestion, 400);
 }
 
 function endGame() {
     const screen = document.getElementById("end-screen");
     const title = document.getElementById("end-status-title");
     const stats = document.getElementById("end-stats-text");
+    const coinText = document.getElementById("end-coins-text");
+    
+    coinText.textContent = `NEURAL COINS: ${state.coins}`;
+    
     if (state.stability > 70) {
         state.william.saved = true;
         title.textContent = "MISSION PASSED";
@@ -496,8 +542,8 @@ function drawWilliam() {
     w.x += (w.tx - w.x) * 0.1;
     w.y += (w.ty - w.y) * 0.1;
     
-    // Position William slightly higher than center to avoid overlapping with bottom box
-    const drawY = (w.y * 0.8) + Math.sin(w.frame / 15) * 8;
+    // Position William to avoid interaction layer
+    const drawY = (w.y * 0.7) + Math.sin(w.frame / 15) * 8;
 
     if (!w.alive) {
         gctx.fillStyle = "#ff0055";
